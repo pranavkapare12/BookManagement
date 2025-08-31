@@ -16,10 +16,16 @@ def IdAlreadyExist(bookId , book):
 def getBook(book_id,book):
     book_Title = input("ENTER TITLE OF BOOK :: ")
     book_Author = input("ENTER BOOK AUTHORE :: ")
-    book_Price = float(input("ENTRE BOOK PRICE :: "))
+    book_Price = input("ENTRE BOOK PRICE :: ")
+    if not book_Price.isnumeric():
+        print("Book Value Should be Float/integer Value")
+        return
+    book_Price = float(book_Price)
+    book_Categorie = input("ENTER BOOK CATEGORIE :: ")
     book[book_id]={
         "Title":book_Title,
         "Author":book_Author,
+        "Cate":book_Categorie,
         "Price":book_Price
         }
 # ADD THE BOOK
@@ -98,7 +104,7 @@ def updateBook(book):
         print("Book is not Present")
         return
     new_book = book[book_id]
-    key = input('Enter by which type you wnat to search Book (title,autho,price)::')
+    key = input('Enter by which type you wnat to search Book (title,autho,price,cate(Catagorie))::')
     key = key.lower().capitalize()
     value = input('Enter new Value :: ')
     if (key == 'price'):
@@ -115,7 +121,7 @@ def searchByAuthore(Bdic):
     for key,value in Bdic.items():
         if value['Author'].lower() == Authore:
             count += 1
-            table += str(key)+"\t"+value['Title']+"\t"+value['Author']+"\t"+str(value['Price'])+"\n"
+            table += str(key)+"\t"+value['Title']+"\t"+value['Author']+"\t"+value['Cate']+"\t"+str(value['Price'])+"\n"
             #print("Book Id ::"+str(key)+" Title :: "+value['Title']+" Authore :: "+value['Author']+" Price :: "+ str(value['Price']))
     if count == 0:
         print("No Record Found")
@@ -124,16 +130,96 @@ def searchByAuthore(Bdic):
     print(table)
     return
 
+def TypeWise(Bdic):
+    Cate = input("ENTER CATEGORIE :: ")
+    Cate = Cate.lower()
+    table = "BookId\tTitle\t\tAuthor\t\tCategorie\t\tPrice\n"
+    count = 0
+    for key,value in Bdic.items():
+        if value['Cate'].lower() == Cate:
+            count += 1
+            table += str(key)+"\t"+value['Title']+"\t"+value['Author']+"\t"+value['Cate']+"\t"+str(value['Price'])+"\n"
+            #print("Book Id ::"+str(key)+" Title :: "+value['Title']+" Authore :: "+value['Author']+" Price :: "+ str(value['Price']))
+    if count == 0:
+        print("No Record Found")
+        return
+    table+= "Count::"+str(count)
+    print(table)
+    return
+
+def maxPrice(mydict):
+    string = ""
+    setPrice = True
+    for key,value in mydict.items():
+        if setPrice:
+            setPrice = False
+            maxPrice = value['Price']
+            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
+            continue
+        if value['Price'] > maxPrice:
+            maxPrice = value['Price']
+            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
+
+    return string,maxPrice
+
+def findNMax(mydic,val):
+    flag = True
+    for key,value in mydic.items():
+        if flag and value['Price'] < val:
+            #print(value)
+            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
+            minPrice = value['Price']
+            flag = False
+        elif not flag and minPrice < value['Price'] and value['Price'] < val:
+            #print(value)
+            minPrice = value['Price']
+            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
+
+    return string,minPrice
+            
+
+def higestPrice(mydict):
+    value = input("Enter Integer Value")
+    if not value.isnumeric():
+        print("Please Enter Integer Value")
+        return
+    value = int(value)
+    length = len(mydict)
+    if value > length:
+        print("The Value is Less than dictonary Size")
+        return
+    
+    table = str()
+    table,num = maxPrice(mydict)
+    for i in range (1,value):
+        temp,num = findNMax(mydict,num)
+        table += temp
+    print(table)
+
+def displayMenu():
+    print('''
+Press (1) :: ADD BOOK
+Press (2) :: UPDATE BOOK
+Press (3) :: DELETE ENTRY
+Press (4) :: DISPLAY BOOKS
+Press (5) :: SEARCH BOOK
+Press (6) :: EXIT
+Press (7) :: SEARCH BY AUTHORE
+Press (8) :: SEARCH BY CATEGORIE
+Press (9) :: SORT HIGEST PRICE
+''')
 
 def main():
     book = dict({
-        1 : {'Title': 'Let Us C', 'Author': 'Yashavant Kanetkar', 'Price': 3000.0},
-        2 : {'Title': 'C Programing Language', 'Author': 'Dennis Ritchie', 'Price': 2000.0},
-        3 : {'Title': 'Dot Net', 'Author': 'Dennis Ritchie', 'Price': 500.0},
-        4 : {'Title': 'Java Programing', 'Author': 'Dennis Ritchie', 'Price': 1000.0}
+        1 : {'Title': 'Let Us C', 'Author': 'Yashavant Kanetkar','Cate':'Coding','Price': 3000.0},
+        2 : {'Title': 'C Programing Language', 'Author': 'Dennis Ritchie','Cate':'Coding','Price': 2000.0},
+        3 : {'Title': 'Dot Net', 'Author': 'Dennis Ritchie','Cate':'Coding','Price': 500.0},
+        4 : {'Title': 'Java Programing', 'Author': 'Dennis Ritchie','Cate':'Coding','Price': 1000.0}
         })
     while True:
-        switch = int(input('Press (1) :: ADD BOOK \nPress (2) :: UPDATE BOOK \nPress (3) :: DELETE ENTRY \nPress (4) :: DISPLAY BOOKS \nPress (5) :: SEARCH BOOK \nPress (6) :: EXIT \nPress (7) Search By Authore \n -> '))
+        displayMenu()
+        switch = int(input('-> '))
+        
         if switch == 1:
             addBooks(book)
         elif switch == 2:
@@ -148,6 +234,10 @@ def main():
             return
         elif switch == 7:
             searchByAuthore(book)
+        elif switch == 8:
+            TypeWise(book)
+        elif switch == 9:
+            higestPrice(book)
         else:
             print("INVALID OPTION")
         
