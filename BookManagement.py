@@ -150,19 +150,22 @@ def TypeWise(Bdic):
 def maxPrice(mydict):
     string = ""
     setPrice = True
+    ids = 0
     for key,value in mydict.items():
         if setPrice:
             setPrice = False
             maxPrice = value['Price']
+            ids = key
             string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
             continue
         if value['Price'] > maxPrice:
             maxPrice = value['Price']
+            ids = key
             string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
 
-    return string,maxPrice
+    return string,maxPrice,ids
 
-def findNMax(mydic,val):
+def findNMax1(mydic,val):
     flag = True
     for key,value in mydic.items():
         if flag and value['Price'] < val:
@@ -174,11 +177,31 @@ def findNMax(mydic,val):
             #print(value)
             minPrice = value['Price']
             string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
+    print(string + str(minPrice))
+    return string,minPrice
 
+def findNMax(mydic,val,ids):
+    flag = True
+    ke = -1
+    for key,value in mydic.items():
+        if flag and key not in ids:
+            ke = key
+            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
+            minPrice = value['Price']
+            flag = False
+        elif not flag and minPrice < value['Price'] and key not in ids:
+            #print(value)
+            minPrice = value['Price']
+            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
+            ke = key
+    ids.append(ke)
+    print("Min Price is"+str(minPrice))
     return string,minPrice
             
 
 def higestPrice(mydict):
+    ids = list()
+    # for Validation Only
     value = input("Enter Integer Value")
     if not value.isnumeric():
         print("Please Enter Integer Value")
@@ -188,13 +211,20 @@ def higestPrice(mydict):
     if value > length:
         print("The Value is Less than dictonary Size")
         return
-    
+    #-------------------#
+    # Finding Max Price in the Dictonary
     table = str()
-    table,num = maxPrice(mydict)
-    for i in range (1,value):
-        temp,num = findNMax(mydict,num)
-        table += temp
+    table,num,book_id = maxPrice(mydict)
+    ids.append(book_id)
+    value -= 1
+
+    # now finding the value which is Second higest in dictonary
+    while value > 0:
+        string,num = findNMax(mydict,num,ids)
+        table += string
+        value -= 1
     print(table)
+    print(ids)
 
 def displayMenu():
     print('''
@@ -214,7 +244,8 @@ def main():
         1 : {'Title': 'Let Us C', 'Author': 'Yashavant Kanetkar','Cate':'Coding','Price': 3000.0},
         2 : {'Title': 'C Programing Language', 'Author': 'Dennis Ritchie','Cate':'Coding','Price': 2000.0},
         3 : {'Title': 'Dot Net', 'Author': 'Dennis Ritchie','Cate':'Coding','Price': 500.0},
-        4 : {'Title': 'Java Programing', 'Author': 'Dennis Ritchie','Cate':'Coding','Price': 1000.0}
+        4 : {'Title': 'Java Programing', 'Author': 'Dennis Ritchie','Cate':'Coding','Price': 1000.0},
+        5 : {'Title': 'Hello', 'Author': 'Pranav','Cate':'Social Life','Price': 2000.0}
         })
     while True:
         displayMenu()
