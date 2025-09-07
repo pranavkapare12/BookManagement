@@ -195,7 +195,7 @@ def findNMax(mydic,val,ids):
             string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
             ke = key
     ids.append(ke)
-    print("Min Price is"+str(minPrice))
+    #print("Min Price is"+str(minPrice))
     return string,minPrice
             
 
@@ -209,7 +209,7 @@ def higestPrice(mydict):
     value = int(value)
     length = len(mydict)
     if value > length:
-        print("The Value is Less than dictonary Size")
+        print("The Value is Greater than dictonary Size")
         return
     #-------------------#
     # Finding Max Price in the Dictonary
