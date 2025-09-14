@@ -1,3 +1,5 @@
+from tabulate import tabulate
+
 # CHECK IS BOOK IS PRESENT IN DICTONARY (DELETING) ITEMS
 def isBookPresent(book,ID):
     if ID in book:
@@ -48,17 +50,29 @@ def deleteBookById(book):
         print("DELETE SUCCESSFULLY")
     else:
         print("BOOK NOT FOUND")
-    
+
+def displayTable(mydict):
+    new_dict = dict()
+
+    for key,value in mydict.items():
+        tempList = list()
+        tempList.append(key)
+        tempList.append(value['Title'])
+        tempList.append(value['Author'])
+        tempList.append(value['Cate'])
+        tempList.append(value['Price'])
+        new_dict[key]=tempList
+    table = tabulate(new_dict.values(),
+                     headers=["ID","Title","Author","Category","Price"]
+                     ,
+                     tablefmt = "fancy_grid"
+                     )
+    return table
+
 # DISPLAY BOOK IN DICTONARY
 def Display(book):
-    print("*"*10,end=" ")
-    print("--BOOKS--","*"*10)
-    for key,value in book.items():
-        print("*"*30)
-        print("BOOK ID :: ",key)
-        for val in value:
-            print(val.upper()," :: ",value[val])
-    print("*"*30)
+    table = displayTable(book)
+    print(table)
 
 def isPresent(book,key,searchValue):
     #print(key , book)
@@ -116,35 +130,41 @@ def updateBook(book):
 def searchByAuthore(Bdic):
     Authore = input("Enter Authore Name :: ")
     Authore = Authore.lower()
-    table = "BookId\tTitle\t\tAuthor\t\tPrice\n"
+    displayList = list()
+    table = ""
     count = 0
     for key,value in Bdic.items():
         if value['Author'].lower() == Authore:
             count += 1
-            table += str(key)+"\t"+value['Title']+"\t"+value['Author']+"\t"+value['Cate']+"\t"+str(value['Price'])+"\n"
-            #print("Book Id ::"+str(key)+" Title :: "+value['Title']+" Authore :: "+value['Author']+" Price :: "+ str(value['Price']))
+            table = str(key)+"\t"+value['Title']+"\t"+value['Author']+"\t"+value['Cate']+"\t"+str(value['Price'])
+            displayList.append(table.split('\t'))
     if count == 0:
         print("No Record Found")
         return
-    table+= "Count::"+str(count)
-    print(table)
+    table= "Count \t"+str(count)
+    displayList.append(table.split('\t'))
+    headers = ['ID','NAME','AUTHORE','CATEGORY','PRICE']
+    print(tabulate(displayList,headers=headers))
     return
 
 def TypeWise(Bdic):
     Cate = input("ENTER CATEGORIE :: ")
     Cate = Cate.lower()
-    table = "BookId\tTitle\t\tAuthor\t\tCategorie\t\tPrice\n"
+    displayList = list()
+    table = ""
     count = 0
     for key,value in Bdic.items():
         if value['Cate'].lower() == Cate:
             count += 1
-            table += str(key)+"\t"+value['Title']+"\t"+value['Author']+"\t"+value['Cate']+"\t"+str(value['Price'])+"\n"
-            #print("Book Id ::"+str(key)+" Title :: "+value['Title']+" Authore :: "+value['Author']+" Price :: "+ str(value['Price']))
+            table = str(key)+"\t"+value['Title']+"\t"+value['Author']+"\t"+value['Cate']+"\t"+str(value['Price'])
+            displayList.append(table.split('\t'))
     if count == 0:
         print("No Record Found")
         return
-    table+= "Count::"+str(count)
-    print(table)
+    table= "Count \t"+str(count)
+    displayList.append(table.split('\t'))
+    headers = ['ID','NAME','AUTHORE','CATEGORY','PRICE']
+    print(tabulate(displayList,headers=headers))
     return
 
 def maxPrice(mydict):
@@ -156,29 +176,14 @@ def maxPrice(mydict):
             setPrice = False
             maxPrice = value['Price']
             ids = key
-            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
+            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])
             continue
         if value['Price'] > maxPrice:
             maxPrice = value['Price']
             ids = key
-            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
+            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])
 
     return string,maxPrice,ids
-
-def findNMax1(mydic,val):
-    flag = True
-    for key,value in mydic.items():
-        if flag and value['Price'] < val:
-            #print(value)
-            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
-            minPrice = value['Price']
-            flag = False
-        elif not flag and minPrice < value['Price'] and value['Price'] < val:
-            #print(value)
-            minPrice = value['Price']
-            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
-    print(string + str(minPrice))
-    return string,minPrice
 
 def findNMax(mydic,val,ids):
     flag = True
@@ -186,13 +191,13 @@ def findNMax(mydic,val,ids):
     for key,value in mydic.items():
         if flag and key not in ids:
             ke = key
-            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
+            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])
             minPrice = value['Price']
             flag = False
         elif not flag and minPrice < value['Price'] and key not in ids:
             #print(value)
             minPrice = value['Price']
-            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])+"\n"
+            string = str(key)+"\t"+value['Title']+"\t"+value['Author']+'\t'+value['Cate']+"\t"+str(value['Price'])
             ke = key
     ids.append(ke)
     #print("Min Price is"+str(minPrice))
@@ -201,6 +206,7 @@ def findNMax(mydic,val,ids):
 
 def higestPrice(mydict):
     ids = list()
+    displayList = list()
     # for Validation Only
     value = input("Enter Integer Value")
     if not value.isnumeric():
@@ -215,15 +221,18 @@ def higestPrice(mydict):
     # Finding Max Price in the Dictonary
     table = str()
     table,num,book_id = maxPrice(mydict)
+    displayList.append(table.split('\t'))
     ids.append(book_id)
     value -= 1
 
     # now finding the value which is Second higest in dictonary
     while value > 0:
         string,num = findNMax(mydict,num,ids)
-        table += string
+        table = string
+        displayList.append(table.split('\t'))
         value -= 1
-    print(table)
+    headers = ['ID','NAME','AUTHORE','CATEGORY','PRICE']
+    print(tabulate(displayList,headers=headers))
     print(ids)
 
 def displayMenu():
@@ -239,17 +248,38 @@ Press (8) :: SEARCH BY CATEGORIE
 Press (9) :: SORT HIGEST PRICE
 ''')
 
+
+
 def main():
-    book = dict({
-        1 : {'Title': 'Let Us C', 'Author': 'Yashavant Kanetkar','Cate':'Coding','Price': 3000.0},
-        2 : {'Title': 'C Programing Language', 'Author': 'Dennis Ritchie','Cate':'Coding','Price': 2000.0},
-        3 : {'Title': 'Dot Net', 'Author': 'Dennis Ritchie','Cate':'Coding','Price': 500.0},
-        4 : {'Title': 'Java Programing', 'Author': 'Dennis Ritchie','Cate':'Coding','Price': 1000.0},
-        5 : {'Title': 'Hello', 'Author': 'Pranav','Cate':'Social Life','Price': 2000.0}
-        })
+    book = {
+    1: {'Title': 'Let Us C', 'Author': 'Yashavant Kanetkar', 'Cate': 'Coding', 'Price': 3000.0},
+    2: {'Title': 'C Programing Language', 'Author': 'Dennis Ritchie', 'Cate': 'Coding', 'Price': 2000.0},
+    3: {'Title': 'Dot Net', 'Author': 'Dennis Ritchie', 'Cate': 'Coding', 'Price': 500.0},
+    4: {'Title': 'Java Programing', 'Author': 'Dennis Ritchie', 'Cate': 'Coding', 'Price': 1000.0},
+    5: {'Title': 'The Hitchhiker\'s Guide to Python', 'Author': 'Kenneth Reitz', 'Cate': 'Coding', 'Price': 1500.0},
+    6: {'Title': 'Automate the Boring Stuff with Python', 'Author': 'Al Sweigart', 'Cate': 'Coding', 'Price': 850.0},
+    7: {'Title': 'Pride and Prejudice', 'Author': 'Jane Austen', 'Cate': 'Classic', 'Price': 350.0},
+    8: {'Title': 'To Kill a Mockingbird', 'Author': 'Harper Lee', 'Cate': 'Classic', 'Price': 400.0},
+    9: {'Title': 'Dune', 'Author': 'Frank Herbert', 'Cate': 'Sci-Fi', 'Price': 925.0},
+    10: {'Title': '1984', 'Author': 'George Orwell', 'Cate': 'Classic', 'Price': 450.0},
+    11: {'Title': 'The Lord of the Rings', 'Author': 'J.R.R. Tolkien', 'Cate': 'Fantasy', 'Price': 2800.0},
+    12: {'Title': 'Sapiens: A Brief History of Humankind', 'Author': 'Yuval Noah Harari', 'Cate': 'History', 'Price': 1100.0},
+    13: {'Title': 'The Martian', 'Author': 'Andy Weir', 'Cate': 'Sci-Fi', 'Price': 750.0},
+    14: {'Title': 'The Silent Patient', 'Author': 'Alex Michaelides', 'Cate': 'Thriller', 'Price': 600.0},
+    15: {'Title': 'The Girl with the Dragon Tattoo', 'Author': 'Stieg Larsson', 'Cate': 'Thriller', 'Price': 700.0},
+    16: {'Title': 'Educated', 'Author': 'Tara Westover', 'Cate': 'Memoir', 'Price': 800.0},
+    17: {'Title': 'Where the Crawdads Sing', 'Author': 'Delia Owens', 'Cate': 'Fiction', 'Price': 675.0},
+    18: {'Title': 'The Hunger Games', 'Author': 'Suzanne Collins', 'Cate': 'YA Fiction', 'Price': 550.0},
+    19: {'Title': 'Harry Potter and the Sorcerer\'s Stone', 'Author': 'J.K. Rowling', 'Cate': 'Fantasy', 'Price': 900.0},
+    20: {'Title': 'The Da Vinci Code', 'Author': 'Dan Brown', 'Cate': 'Thriller', 'Price': 820.0}
+}
     while True:
         displayMenu()
-        switch = int(input('-> '))
+        switch = input('-> ')
+        if not switch.isnumeric():
+            print("The Value must be numeric")
+            continue
+        switch = int(switch)
         
         if switch == 1:
             addBooks(book)
@@ -259,6 +289,7 @@ def main():
             deleteBookById(book)
         elif switch == 4:
             Display(book)
+            #displayTable(book)
         elif switch == 5:
             Search(book)
         elif switch == 6:
